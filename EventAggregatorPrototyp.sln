@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBrokerage", "EventBrok
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBrokerage.Tests", "EventBrokerage.Tests\EventBrokerage.Tests.csproj", "{32CA5988-8C78-4562-A6FD-106F541C25DC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient", "TestClient\TestClient.csproj", "{EEA79120-21CC-432A-BD77-CF27CCC07984}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{32CA5988-8C78-4562-A6FD-106F541C25DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32CA5988-8C78-4562-A6FD-106F541C25DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32CA5988-8C78-4562-A6FD-106F541C25DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEA79120-21CC-432A-BD77-CF27CCC07984}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEA79120-21CC-432A-BD77-CF27CCC07984}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEA79120-21CC-432A-BD77-CF27CCC07984}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEA79120-21CC-432A-BD77-CF27CCC07984}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,11 +8,29 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage
 {
     public class EventBroker : IEventBroker
     {
-        private readonly Dictionary<Type, List<Delegate>> _subscriptions;
+        private readonly Dictionary<Type, List<Subscription>> _subscriptions;
 
         public EventBroker()
         {
-            _subscriptions = new Dictionary<Type, List<Delegate>>();
+            _subscriptions = new Dictionary<Type, List<Subscription>>();
+        }
+
+        public void Subscribe<TMessage>(Func<TMessage, bool> filter, Action<TMessage> handler)
+        {
+            if (filter == null)
+            {
+                throw new ArgumentNullException(nameof(filter));
+            }
+
+            if (handler == null)
+            {
+                throw new ArgumentNullException(nameof(handler));
+            }
+
+            Subscribe(handler);
+            _subscriptions[typeof(TMessage)]
+                .Single(s => s.Handler == handler)
+                .Filter = filter;
         }
 
         public void Subscribe<TMessage>(Action<TMessage> handler)
@@ -27,16 +45,18 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage
             var messageAlreadyHasSubscribers = _subscriptions.ContainsKey(messageType);
             if (!messageAlreadyHasSubscribers)
             {
-                _subscriptions[messageType] = new List<Delegate>();
+                _subscriptions[messageType] = new List<Subscription>();
             }
 
-            var isHandlerAlreadyRegistered = _subscriptions[messageType].Contains(handler);
+            var isHandlerAlreadyRegistered = _subscriptions[messageType].Any(s => s.Handler == handler);
             if (isHandlerAlreadyRegistered)
             {
                 throw new DuplicatedHandlerException("Handler was already registered");
             }
 
-            _subscriptions[messageType].Add(handler);
+
+            var subscription = new Subscription(null, handler);
+            _subscriptions[messageType].Add(subscription);
         }
 
         public int AmountSubscriptions => _subscriptions.SelectMany(s => s.Value).Count();
@@ -57,11 +77,21 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage
 
             var handlers = _subscriptions[messageType];
 
-            foreach (var h in handlers)
+            foreach (var handler in handlers)
             {
                 try
                 {
-                    h.DynamicInvoke(message);
+                    var isFilterSet = handler.Filter != null;
+                    if (isFilterSet)
+                    {
+                        var isFilterMatched = (bool)handler.Filter.DynamicInvoke(message);
+                        if (!isFilterMatched)
+                        {
+                            continue;
+                        } 
+                    }
+
+                    handler.Handler.DynamicInvoke(message);
                 }
                 catch(Exception e)
                 {

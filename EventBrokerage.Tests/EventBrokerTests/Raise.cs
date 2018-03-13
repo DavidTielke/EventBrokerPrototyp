@@ -46,7 +46,21 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage.Tests.EventBrokerTests
             isCalled1.Should().BeTrue("the raised message was subscribed for that handler");
             isCalled2.Should().BeTrue("the raised message was subscribed for that handler");
         }
-        
+
+        [TestMethod]
+        public void Raise_SubscriptionOrderisOneTwo_HandlerOrderIsOneTwo()
+        {
+            var order = "";
+            Action<TestMessage> handler1 = msg => order +="One";
+            Action<TestMessage> handler2 = msg => order += "Two";
+            _broker.Subscribe(handler1);
+            _broker.Subscribe(handler2);
+
+            _broker.Raise(new TestMessage());
+
+            order.Should().Be("OneTwo", "the subscribe order was one two");
+        }
+
         // Todo: TC Logging bei Exception
 
         [TestMethod]
@@ -59,7 +73,7 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage.Tests.EventBrokerTests
         }
 
         [TestMethod]
-        public void Raise_FirstSubscriberThrowsException_SecondSubscriberIsCalled()
+        public void Raise_FirstSubscriberHandlerThrowsException_SecondSubscriberIsCalled()
         {
             var isCalled2 = false;
             Action<TestMessage> handler1 = msg => throw new Exception();
@@ -68,7 +82,22 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage.Tests.EventBrokerTests
             _broker.Subscribe(handler2);
 
             _broker.Raise(new TestMessage());
-            
+
+            isCalled2.Should().BeTrue("the raised message was subscribed for that handler");
+        }
+
+        [TestMethod]
+        public void Raise_FirstSubscriberFilterThrowsException_SecondSubscriberIsCalled()
+        {
+            var isCalled2 = false;
+            Action<TestMessage> handler1 = msg => msg.Message = "Nothing";
+            Func<TestMessage, bool> filter1 = msg => throw new Exception();
+            Action<TestMessage> handler2 = msg => isCalled2 = true;
+            _broker.Subscribe(filter1, handler1);
+            _broker.Subscribe(handler2);
+
+            _broker.Raise(new TestMessage());
+
             isCalled2.Should().BeTrue("the raised message was subscribed for that handler");
         }
 

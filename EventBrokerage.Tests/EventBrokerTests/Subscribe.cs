@@ -57,7 +57,5 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage.Tests.EventBrokerTests
                 .Should()
                 .Throw<DuplicatedHandlerException>();
         }
-
-        // Todo: TC Reihenfolge testen
     }
 }
