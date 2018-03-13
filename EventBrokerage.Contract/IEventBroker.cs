@@ -1,6 +1,6 @@
 ﻿namespace DavidTielke.MBH.CrossCutting.EventBrokerage.Contract
 {
-    public interface IInterface
+    public interface IEventBroker
     {
     }
 }
