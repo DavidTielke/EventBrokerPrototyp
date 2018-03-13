@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DavidTielke.MBH.CrossCutting.EventBrokerage.Contract.Exceptions;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -44,10 +45,19 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage.Tests.EventBrokerTests
                 .Should()
                 .Be(2, "two subscription was added.");
         }
-    }
 
-    public class TestMessage
-    {
-        public string Message { get; set; }
+        [TestMethod]
+        public void Subscribe_TwoEqualHandlerAdded_DuplicatedHandlerException()
+        {
+            Action<TestMessage> handler = msg => msg.Message = "Test";
+            _broker.Subscribe(handler);
+
+            _broker
+                .Invoking(b => b.Subscribe(handler))
+                .Should()
+                .Throw<DuplicatedHandlerException>();
+        }
+
+        // Todo: TC Reihenfolge testen
     }
 }

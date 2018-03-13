@@ -57,13 +57,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EventBrokerTests\EventBrokerTest.cs" />
+    <Compile Include="EventBrokerTests\Raise.cs" />
     <Compile Include="EventBrokerTests\Subscribe.cs" />
+    <Compile Include="EventBrokerTests\TestMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EventBrokerage.Contract\EventBrokerage.Contract.csproj">
+      <Project>{280206E9-53B5-4BDF-9D2D-F4A578B6F2E9}</Project>
+      <Name>EventBrokerage.Contract</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EventBrokerage\EventBrokerage.csproj">
       <Project>{492CDBED-312B-4AB5-AAB2-CAEBB46FF689}</Project>
       <Name>EventBrokerage</Name>
