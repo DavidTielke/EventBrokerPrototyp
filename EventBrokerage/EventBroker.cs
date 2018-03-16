@@ -15,6 +15,45 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage
             _subscriptions = new Dictionary<Type, List<Subscription>>();
         }
 
+        public void Subscribe<THandler, TMessage>(Action<THandler, TMessage> handler)
+        {
+            if (handler == null)
+            {
+                throw new ArgumentNullException(nameof(handler));
+            }
+
+            var subscription = new Subscription(handler)
+            {
+                HandlerType = typeof(THandler)
+            };
+
+            AddSubscription<TMessage>(subscription);
+        }
+
+        private void AddSubscription<TMessage>(Subscription subscription)
+        {
+            var messageType = typeof(TMessage);
+
+            var messageAlreadyHasSubscribers = _subscriptions.ContainsKey(messageType);
+            if (!messageAlreadyHasSubscribers)
+            {
+                _subscriptions[messageType] = new List<Subscription>();
+            }
+
+            var isHandlerAlreadyRegistered = _subscriptions[messageType].Any(s => s.Handler == subscription.Handler);
+            if (isHandlerAlreadyRegistered)
+            {
+                throw new DuplicatedHandlerException("Handler was already registered");
+            }
+
+            _subscriptions[messageType].Add(subscription);
+        }
+
+        public void Subscribe<THandler, TMessage>(Func<TMessage, bool> filter, Action<TMessage> handler)
+        {
+
+        }
+
         public void Subscribe<TMessage>(Func<TMessage, bool> filter, Action<TMessage> handler)
         {
             if (filter == null)
@@ -39,24 +78,10 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage
             {
                 throw new ArgumentNullException(nameof(handler));
             }
+            
+            var subscription = new Subscription(handler);
 
-            var messageType = typeof(TMessage);
-
-            var messageAlreadyHasSubscribers = _subscriptions.ContainsKey(messageType);
-            if (!messageAlreadyHasSubscribers)
-            {
-                _subscriptions[messageType] = new List<Subscription>();
-            }
-
-            var isHandlerAlreadyRegistered = _subscriptions[messageType].Any(s => s.Handler == handler);
-            if (isHandlerAlreadyRegistered)
-            {
-                throw new DuplicatedHandlerException("Handler was already registered");
-            }
-
-
-            var subscription = new Subscription(null, handler);
-            _subscriptions[messageType].Add(subscription);
+            AddSubscription<TMessage>(subscription);
         }
 
         public int AmountSubscriptions => _subscriptions.SelectMany(s => s.Value).Count();

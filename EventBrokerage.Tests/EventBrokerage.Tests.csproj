@@ -59,6 +59,7 @@
     <Compile Include="EventBrokerTests\EventBrokerTest.cs" />
     <Compile Include="EventBrokerTests\Raise.cs" />
     <Compile Include="EventBrokerTests\Subscribe.cs" />
+    <Compile Include="EventBrokerTests\SubscribeAndActivate.cs" />
     <Compile Include="EventBrokerTests\SubscribeWithFilter.cs" />
     <Compile Include="EventBrokerTests\TestMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

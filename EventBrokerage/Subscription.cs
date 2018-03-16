@@ -6,10 +6,10 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage
     {
         public Delegate Filter { get; set; }
         public Delegate Handler { get; set; }
+        public Type HandlerType { get; set; }
 
-        public Subscription(Delegate filter, Delegate handler)
+        public Subscription(Delegate handler)
         {
-            Filter = filter;
             Handler = handler;
         }
     }
