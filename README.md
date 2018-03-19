@@ -26,6 +26,7 @@ darauf zugreifen und diese und auch die Quellcodes hier, in den eigenen Projekte
 - [ ] Anf3: Durch angabe eines Filters soll es möglich sein, eine Nachricht nur unter bestimmten Bedingungen zu erhalten.
 - [ ] Anf4: Die Registrierung für einen noch nicht erstellten EventHandler muss möglich sein.
 - [ ] Anf5: Falls ein Subscriber beim behandeln einer Nachricht eine Exception auslöst, darf dies nicht die restlichen Subscriber beeinflussen
+- [ ] Anf6: Optionale Möglichkeit von WeakReferences zu Subscribern mit Weak<T> umsetzen.
 
 ## Erscheinungstermine
 Jeweils Montag bis Freitag gibt es jeden Morgen um 8:30 Uhr eine neue Episode.
@@ -45,3 +46,7 @@ Jeweils Montag bis Freitag gibt es jeden Morgen um 8:30 Uhr eine neue Episode.
 ### Episode 3 - Die erste Subscription
 [![E1 - Test](https://img.youtube.com/vi/wNkC1RaeUFU/0.jpg)](https://www.youtube.com/watch?v=wNkC1RaeUFU&list=PLl90zba6gg1-S9d0A9CMCC2DBRNGi90JK&index=1&t=0s)  
 * Commit: [hier](https://github.com/DavidTielke/EventBrokerPrototyp/commit/160f9e9e8ce22b84c06c6f4183621541b2a7cf1a)
+
+### Episode 4 - Doppelte Handler
+[![E1 - Test](https://img.youtube.com/vi/TAju_j6wS3s/0.jpg)](https://www.youtube.com/watch?v=TAju_j6wS3s&list=PLl90zba6gg1-S9d0A9CMCC2DBRNGi90JK&index=1&t=0s)  
+* Commit: [hier](https://github.com/DavidTielke/EventBrokerPrototyp/commit/2fc4664d2014cf85135c5073ec8f273a0fc49194)
