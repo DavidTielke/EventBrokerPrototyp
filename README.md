@@ -28,6 +28,7 @@ darauf zugreifen und diese und auch die Quellcodes hier, in den eigenen Projekte
 - [ ] Anf5: Falls ein Subscriber beim behandeln einer Nachricht eine Exception auslöst, darf dies nicht die restlichen Subscriber beeinflussen
 - [ ] Anf6: Optionale Möglichkeit von WeakReferences zu Subscribern mit Weak(of T) umsetzen.
 - [ ] Anf7: Message-Mapping
+- [ ] Anf8: Handler komplett async
 
 ## Erscheinungstermine
 Jeweils Montag bis Freitag gibt es jeden Morgen um 8:30 Uhr eine neue Episode.
