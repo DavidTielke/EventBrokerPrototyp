@@ -26,17 +26,5 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage.Tests.EventBrokerTests
 
             _broker.AmountSubscriptions.Should().Be(1, "one subscription was registered");
         }
-
-        // TC: Wird Factory-Lambda aufgerufen?
-        // TC: Wird korrekter handler übergeben?
-
-    }
-
-    public class TestHandler
-    {
-        public void Foo()
-        {
-
-        }
     }
 }

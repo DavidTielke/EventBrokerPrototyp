@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DavidTielke.MBH.CrossCutting.EventBrokerage.Contract.Exceptions;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -101,11 +102,54 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage.Tests.EventBrokerTests
             isCalled2.Should().BeTrue("the raised message was subscribed for that handler");
         }
 
-
         [TestMethod]
         public void Raise_MessageHasNoSubscriber_NoError()
         {
             _broker.Raise(new TestMessage());
+        }
+
+        [TestMethod]
+        public void Raise_HandlerTypeRegWithoutResolveCallback_NoResolverCallbackException()
+        {
+            _broker.Subscribe<TestHandler, TestMessage>((h,m) => h.ToString());
+
+            _broker
+                .Invoking(b => b.Raise(new TestMessage()))
+                .Should()
+                .Throw<NoResolveCallbackException>();
+        }
+
+        [TestMethod]
+        public void Raise_TestHandlerAsHandlerSet_ResolveCallbackWasCalled()
+        {
+            var wasCalled = false;
+            _broker.SetResolverCallback(type =>
+            {
+                wasCalled = true;
+                return new TestHandler();
+            });
+            _broker.Subscribe<TestHandler, TestMessage>((h, m) => h.ToString());
+
+            _broker.Raise(new TestMessage());
+
+            wasCalled
+                .Should()
+                .BeTrue("the resolve callback should be called.");
+        }
+
+        [TestMethod]
+        public void Raise_TestHandlerCreated_SameInstanceIsPassedToHandler()
+        {
+            var handler = new TestHandler();
+            TestHandler passedHandler = null;
+            _broker.SetResolverCallback(type => handler);
+            _broker.Subscribe<TestHandler, TestMessage>((h, m) => passedHandler = h);
+
+            _broker.Raise(new TestMessage());
+
+            handler
+                .Should()
+                .BeSameAs(passedHandler, "the created handler should be passed to the lambda");
         }
     }
 }

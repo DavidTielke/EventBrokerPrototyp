@@ -13,14 +13,14 @@ namespace TestClient
         static void Main(string[] args)
         {
             IEventBroker broker = new EventBroker();
+            broker.SetResolverCallback(t => new TaskManager());
 
             var billManager = new BillManager(broker);
-            var taskManager = new TaskManager();
 
-            broker.Subscribe<NewBillMsg>(msg =>
+            broker.Subscribe<TaskManager, NewBillMsg>((handler, msg) =>
             {
                 var title = msg.Sender + ": " + msg.Value;
-                taskManager.Create(title);
+                handler.Create(title);
             });
 
             billManager.Create();

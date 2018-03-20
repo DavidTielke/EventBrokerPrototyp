@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\DuplicatedHandlerException.cs" />
+    <Compile Include="Exceptions\NoResolveCallbackException.cs" />
     <Compile Include="IEventBroker.cs" />
     <Compile Include="Exceptions\EventBrokerageException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
