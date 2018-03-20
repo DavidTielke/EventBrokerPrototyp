@@ -6,7 +6,6 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage.Contract
     {
         void Subscribe<TMessage>(Func<TMessage, bool> filter, Action<TMessage> handler);
         void Subscribe<TMessage>(Action<TMessage> handler);
-        int AmountSubscriptions { get; }
         void Raise(object message);
         void Subscribe<THandler, TMessage>(Action<THandler, TMessage> handler);
         void Subscribe<THandler, TMessage>(Func<TMessage, bool> filter, Action<THandler, TMessage> handler);

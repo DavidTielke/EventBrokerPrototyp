@@ -61,9 +61,7 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage.Tests.EventBrokerTests
 
             order.Should().Be("OneTwo", "the subscribe order was one two");
         }
-
-        // Todo: TC Logging bei Exception
-
+        
         [TestMethod]
         public void Raise_SubscriberRaisesException_SubscribersWereCalled()
         {

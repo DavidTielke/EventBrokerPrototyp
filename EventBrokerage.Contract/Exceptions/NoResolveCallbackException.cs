@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace DavidTielke.MBH.CrossCutting.EventBrokerage.Contract.Exceptions
 {
     [Serializable]
-    public class NoResolveCallbackException : Exception
+    public class NoResolveCallbackException : EventBrokerageException
     {
         public NoResolveCallbackException()
         {

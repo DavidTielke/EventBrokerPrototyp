@@ -49,7 +49,7 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage
 
             _messageSubscriptions[messageType].Add(subscription);
         }
-        
+
         public void Subscribe<THandler, TMessage>(Func<TMessage, bool> filter, Action<THandler, TMessage> handler)
         {
             if (filter == null)
@@ -70,7 +70,7 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage
 
             AddSubscription<TMessage>(subscription);
         }
-        
+
         public void Subscribe<TMessage>(Func<TMessage, bool> filter, Action<TMessage> handler)
         {
             if (filter == null)
@@ -85,7 +85,7 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage
 
             Subscribe(handler);
             _messageSubscriptions[typeof(TMessage)]
-                .Single(s => s.Handler == (Delegate) handler)
+                .Single(s => s.Handler == (Delegate)handler)
                 .Filter = filter;
         }
 
@@ -95,19 +95,14 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage
             {
                 throw new ArgumentNullException(nameof(handler));
             }
-            
+
             var subscription = new Subscription(handler);
 
             AddSubscription<TMessage>(subscription);
         }
 
-        public int AmountSubscriptions => _messageSubscriptions.SelectMany(s => s.Value).Count();
-
-
-        // Todo: Diskussion WeakReference<T>
-        // Todo: Refactoring: Methode einfacher machen
-        // Todo: Code komplett aufräumen
-        // Todo: Code komplett durchgehen und zusammenfassen
+        internal int AmountSubscriptions => _messageSubscriptions.SelectMany(s => s.Value).Count();
+        
         public void Raise(object message)
         {
             if (message == null)
@@ -116,53 +111,62 @@ namespace DavidTielke.MBH.CrossCutting.EventBrokerage
             }
 
             var messageType = message.GetType();
-            var hasHandler = _messageSubscriptions.ContainsKey(messageType) && _messageSubscriptions[messageType].Count > 0;
-            if (!hasHandler)
+            var isSomeoneInteressted = _messageSubscriptions.ContainsKey(messageType) && _messageSubscriptions[messageType].Count > 0;
+            if (!isSomeoneInteressted)
             {
                 return;
             }
 
             var subscriptions = _messageSubscriptions[messageType];
 
+            EnsureResolveCallbackIsSetIfNeeded(subscriptions);
+
             foreach (var subscription in subscriptions)
             {
-                var hasAnyActivationSubscription = subscriptions.Any(s => s.HandlerType != null);
-                var hasResolveCallbackSet = _resolverCallback != null;
-                if (hasAnyActivationSubscription && !hasResolveCallbackSet)
+                RaiseForSubscription(message, subscription);
+            }
+        }
+
+        private void EnsureResolveCallbackIsSetIfNeeded(List<Subscription> subscriptions)
+        {
+            var hasAnyActivationSubscription = subscriptions.Any(s => s.HandlerType != null);
+            var hasResolveCallbackSet = _resolverCallback != null;
+            if (hasAnyActivationSubscription && !hasResolveCallbackSet)
+            {
+                throw new NoResolveCallbackException("Can't activate handler, no resolve callback set.");
+            }
+        }
+
+        private void RaiseForSubscription(object message, Subscription subscription)
+        {
+            try
+            {
+                var isFilterSet = subscription.Filter != null;
+                if (isFilterSet)
                 {
-                    throw new NoResolveCallbackException("Can't activate handler, no resolve callback set.");
-                }
-
-                try
-                {
-                    var isFilterSet = subscription.Filter != null;
-                    if (isFilterSet)
+                    var isFilterMatched = (bool) subscription.Filter.DynamicInvoke(message);
+                    if (!isFilterMatched)
                     {
-                        var isFilterMatched = (bool)subscription.Filter.DynamicInvoke(message);
-                        if (!isFilterMatched)
-                        {
-                            continue;
-                        } 
-                    }
-
-                    var isHandlerTypeSet = subscription.HandlerType != null;
-                    if (isHandlerTypeSet)
-                    {
-                        var handlerType = subscription.HandlerType;
-                        var handler = _resolverCallback(handlerType);
-
-                        subscription.Handler.DynamicInvoke(handler, message);
-                    }
-                    else
-                    {
-                        subscription.Handler.DynamicInvoke(message);
+                        return;
                     }
                 }
-                catch(Exception e)
+
+                var shallHandlerTypeBeCreated = subscription.HandlerType != null;
+                if (shallHandlerTypeBeCreated)
                 {
-                    // Todo: Logging im Exceptionfall hinzufügen
-                    Console.WriteLine(e);
+                    var handlerType = subscription.HandlerType;
+                    var handler = _resolverCallback(handlerType);
+
+                    subscription.Handler.DynamicInvoke(handler, message);
                 }
+                else
+                {
+                    subscription.Handler.DynamicInvoke(message);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
 
