@@ -29,6 +29,9 @@ darauf zugreifen und diese und auch die Quellcodes hier, in den eigenen Projekte
 - [ ] Anf6: Optionale Möglichkeit von WeakReferences zu Subscribern mit Weak(of T) umsetzen.
 - [ ] Anf7: Message-Mapping
 - [ ] Anf8: Handler komplett async
+- [ ] Anf9: Logging hinzufügen
+- [ ] Anf10: Unsubscribe hinzufügen
+- [ ] Anf 11: AmountSubsscribers auf Messagetype umbauen
 
 ## Erscheinungstermine
 Jeweils Montag bis Freitag gibt es jeden Morgen um 8:30 Uhr eine neue Episode.
